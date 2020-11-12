@@ -5,17 +5,17 @@
   "type": "object",
   "description": "Creates an Angular component with BB naming conventions",
   "properties": {
-    "name": {
+    "path": {
       "type": "string",
-      "description": "The name of the component",
+      "description": "The path of the component",
       "$default": {
         "$source": "argv",
         "index": 0
       },
-      "x-prompt": "What is the component's name? (e.g. feature/module-path/MyComponent)"
+      "x-prompt": "What is the component's path? (e.g. feature/module-path/my-component)"
     }
   },
   "required": [
-    "name"
+    "path"
   ]
 }

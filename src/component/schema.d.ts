@@ -1,3 +1,3 @@
 export interface BBComponentSchematics {
-  name: string;
+  path: string;
 }
