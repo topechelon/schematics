@@ -13,6 +13,10 @@
         "index": 0
       },
       "x-prompt": "What is the component's path? (e.g. feature/module-path/my-component)"
+    },
+    "baseDir": {
+      "type": "string",
+      "description": "The base directory for the component path"
     }
   },
   "required": [

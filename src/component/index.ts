@@ -1,11 +1,14 @@
 import {
+  FileOperator,
   Rule,
   SchematicContext,
   Tree,
   apply,
   mergeWith,
   template,
-  url
+  url,
+  move,
+  forEach
 } from '@angular-devkit/schematics';
 import { BBComponentSchematics } from './schema';
 
@@ -35,8 +38,16 @@ function buildFileName(path: string): string {
   return parts[parts.length - 1];
 }
 
+function buildDirName(path: string, options: BBComponentSchematics): string {
+  let parts: Array<string> = path.split('/');
+  parts = parts.map(strings.dasherize);
+  return options.baseDir + parts.join('/');
+}
+
 export function component(options: BBComponentSchematics): Rule {
   return (_tree: Tree, _context: SchematicContext) => {
+    options.baseDir = options.baseDir ?? 'src/app/';
+
     const { path } = options;
 
     const sourceTemplates = url('./files');
@@ -44,8 +55,15 @@ export function component(options: BBComponentSchematics): Rule {
       template({
         selector: buildSelector(path),
         fileName: buildFileName(path),
-        buildClassName: buildClassName(path)
-      })
+        className: buildClassName(path)
+      }),
+      forEach((file => {
+        return {
+          content: file.content,
+          path: file.path.replace(/\.template$/, '')
+        };
+      }) as FileOperator),
+      move(buildDirName(path, options))
     ]);
 
     return mergeWith(sourceParameterizedTemplates);

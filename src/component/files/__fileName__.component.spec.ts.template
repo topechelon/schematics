@@ -1,0 +1,25 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { <%= className %> } from './<%= fileName %>.component';
+
+describe('<%= className %>', () => {
+  let component: <%= className %>;
+  let fixture: ComponentFixture<<%= className %>>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ <%= className %> ]
+    })
+    .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(<%= className %>);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
