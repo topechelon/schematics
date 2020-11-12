@@ -25,21 +25,21 @@ function getPathParts(path: string): Array<string> {
   return parts.filter(part => !IGNORED_PREFIXES.includes(part));
 }
 
-function buildClassName(path: string): string {
-  return strings.classify(getPathParts(path).join('-'));
+function buildClassName(options: BBComponentSchematics): string {
+  return strings.classify(getPathParts(options.path).join('-'));
 }
 
-function buildSelector(path: string): string {
-  return 'bb-' + getPathParts(path).join('-');
+function buildSelector(options: BBComponentSchematics): string {
+  return options.prefix + getPathParts(options.path).join('-');
 }
 
-function buildFileName(path: string): string {
-  let parts: Array<string> = getPathParts(path);
+function buildFileName(options: BBComponentSchematics): string {
+  let parts: Array<string> = getPathParts(options.path);
   return parts[parts.length - 1];
 }
 
-function buildDirName(path: string, options: BBComponentSchematics): string {
-  let parts: Array<string> = path.split('/');
+function buildDirName(options: BBComponentSchematics): string {
+  let parts: Array<string> = options.path.split('/');
   parts = parts.map(strings.dasherize);
   return options.baseDir + parts.join('/');
 }
@@ -47,15 +47,14 @@ function buildDirName(path: string, options: BBComponentSchematics): string {
 export function component(options: BBComponentSchematics): Rule {
   return (_tree: Tree, _context: SchematicContext) => {
     options.baseDir = options.baseDir ?? 'src/app/';
-
-    const { path } = options;
+    options.prefix = options.prefix ?? 'bb-';
 
     const sourceTemplates = url('./files');
     const sourceParameterizedTemplates = apply(sourceTemplates, [
       template({
-        selector: buildSelector(path),
-        fileName: buildFileName(path),
-        className: buildClassName(path)
+        selector: buildSelector(options),
+        fileName: buildFileName(options),
+        className: buildClassName(options)
       }),
       forEach((file => {
         return {
@@ -63,7 +62,7 @@ export function component(options: BBComponentSchematics): Rule {
           path: file.path.replace(/\.template$/, '')
         };
       }) as FileOperator),
-      move(buildDirName(path, options))
+      move(buildDirName(options))
     ]);
 
     return mergeWith(sourceParameterizedTemplates);

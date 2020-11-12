@@ -17,6 +17,10 @@
     "baseDir": {
       "type": "string",
       "description": "The base directory for the component path"
+    },
+    "prefix": {
+      "type": "string",
+      "description": "The prefix for the component selector"
     }
   },
   "required": [
