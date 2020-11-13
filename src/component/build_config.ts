@@ -14,7 +14,7 @@ function getUnfilteredPathParts(path: string): Array<string> {
 }
 
 function buildClassName(options: BBComponentSchematics): string {
-  return strings.classify(getUnfilteredPathParts(options.path).join('-'));
+  return strings.classify(getUnfilteredPathParts(options.path).join('-')) + 'Component';
 }
 
 function buildSelector(options: BBComponentSchematics): string {

@@ -5,6 +5,11 @@
       "description": "BB Component Schematic",
       "factory": "./component/index#component",
       "schema": "./component/schema.json"
+    },
+    "module": {
+      "description": "BB Module Schematic",
+      "factory": "./module/index#module",
+      "schema": "./module/schema.json"
     }
   }
 }

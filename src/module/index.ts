@@ -11,18 +11,14 @@ import {
   chain,
   forEach
 } from '@angular-devkit/schematics';
-import { BBComponentSchematics } from './schema';
+import { BBModuleSchematics } from './schema';
 
-import { addDeclarationToNgModule } from './add_to_module';
-import { buildConfig, BBComponentConfiguration } from './build_config';
+import { buildConfig, BBModuleConfiguration } from './build_config';
 
-export function component(options: BBComponentSchematics): Rule {
+export function module(options: BBModuleSchematics): Rule {
   return (_tree: Tree, _context: SchematicContext) => {
-    options.prefix = options.prefix ?? 'bb-';
     options.baseDir = options.baseDir ?? 'src/app';
-    options.skipImport = options.skipImport ?? false;
-    options.export = options.export ?? true;
-    let config: BBComponentConfiguration = buildConfig(options);
+    let config: BBModuleConfiguration = buildConfig(options);
 
     const sourceTemplates = url('./files');
     const sourceParameterizedTemplates = apply(sourceTemplates, [
@@ -37,7 +33,6 @@ export function component(options: BBComponentSchematics): Rule {
     ]);
 
     return chain([
-      addDeclarationToNgModule(config),
       mergeWith(sourceParameterizedTemplates)
     ]);
   };

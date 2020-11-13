@@ -3,9 +3,12 @@
   "version": "0.0.0",
   "description": "A blank schematics",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "npm run clean && tsc -p tsconfig.json",
     "test": "npm run build && jasmine src/**/*_spec.js",
-    "example:component": "schematics .:component shared/network/recruiter-profile/image --debug=false"
+    "example": "npm run clean && npm run example:module && npm run example:component",
+    "example:module": "schematics .:module shared/network --debug=false",
+    "example:component": "schematics .:component shared/network/recruiter-profile/image --debug=false",
+    "clean": "rm -rf src/app/"
   },
   "keywords": [
     "schematics"
