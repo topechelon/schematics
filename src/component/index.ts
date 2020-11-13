@@ -21,7 +21,7 @@ export function component(options: BBComponentSchematics): Rule {
     options.prefix = options.prefix ?? 'bb-';
     options.baseDir = options.baseDir ?? 'src/app';
     options.skipImport = options.skipImport ?? false;
-    options.export = options.export ?? true;
+    options.export = options.export ?? false;
     let config: BBComponentConfiguration = buildConfig(options);
 
     const sourceTemplates = url('./files');
