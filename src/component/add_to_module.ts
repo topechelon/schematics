@@ -35,10 +35,9 @@ export function addDeclarationToNgModule(config: BBComponentConfiguration): Rule
 
     const source = readIntoSourceFile(host, modulePath);
 
-    const componentPath = `/${config.directory}/${config.fileName}.component.ts`;
+    const componentPath = `/${config.directory}/${config.fileName}.component`;
     const relativePath = buildRelativePath(modulePath, componentPath);
 
-    console.log(relativePath);
     const declarationChanges = addDeclarationToModule(source,
                                                       modulePath,
                                                       config.className,
