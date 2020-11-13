@@ -1,5 +1,5 @@
 {
-  "name": "@topechelon/bb-schematics",
+  "name": "@topechelon/schematics",
   "version": "1.0.0",
   "description": "TE Angular Schematics",
   "scripts": {
@@ -13,7 +13,8 @@
   "keywords": [
     "schematics"
   ],
-  "author": "",
+  "author": "Top Echelon Software",
+  "homepage": "https://github.com/topechelon/schematics",
   "license": "MIT",
   "schematics": "./src/collection.json",
   "dependencies": {
