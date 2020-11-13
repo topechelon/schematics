@@ -1,6 +1,6 @@
 {
   "name": "@topechelon/schematics",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "TE Angular Schematics",
   "scripts": {
     "build": "npm run clean && tsc -p tsconfig.json",

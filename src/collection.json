@@ -2,11 +2,13 @@
   "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
   "schematics": {
     "component": {
+      "aliases": [ "c" ],
       "description": "BB Component Schematic",
       "factory": "./component/index#component",
       "schema": "./component/schema.json"
     },
     "module": {
+      "aliases": [ "m" ],
       "description": "BB Module Schematic",
       "factory": "./module/index#module",
       "schema": "./module/schema.json"
