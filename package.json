@@ -1,7 +1,7 @@
 {
-  "name": "bb-schematics",
+  "name": "@topechelon/bb-schematics",
   "version": "1.0.0",
-  "description": "A blank schematics",
+  "description": "TE Angular Schematics",
   "scripts": {
     "build": "npm run clean && tsc -p tsconfig.json",
     "test": "npm run build && jasmine src/**/*_spec.js",
