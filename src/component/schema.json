@@ -21,6 +21,14 @@
     "prefix": {
       "type": "string",
       "description": "The prefix for the component selector"
+    },
+    "skipImport": {
+      "type": "boolean",
+      "description": "Whether or not the component should automatically be imported into a module (Default: false)"
+    },
+    "export": {
+      "type": "boolean",
+      "description": "Whether or not the component should automatically be exported from a module (Default: true)"
     }
   },
   "required": [

@@ -8,63 +8,37 @@ import {
   template,
   url,
   move,
+  chain,
   forEach
 } from '@angular-devkit/schematics';
 import { BBComponentSchematics } from './schema';
 
-import { strings } from '@angular-devkit/core';
-
-const IGNORED_PREFIXES = [
-  'shared',
-  'feature'
-];
-
-function getPathParts(path: string): Array<string> {
-  let parts: Array<string> = path.split('/');
-  parts = parts.map(strings.dasherize);
-  return parts.filter(part => !IGNORED_PREFIXES.includes(part));
-}
-
-function buildClassName(options: BBComponentSchematics): string {
-  return strings.classify(getPathParts(options.path).join('-'));
-}
-
-function buildSelector(options: BBComponentSchematics): string {
-  return options.prefix + getPathParts(options.path).join('-');
-}
-
-function buildFileName(options: BBComponentSchematics): string {
-  let parts: Array<string> = getPathParts(options.path);
-  return parts[parts.length - 1];
-}
-
-function buildDirName(options: BBComponentSchematics): string {
-  let parts: Array<string> = options.path.split('/');
-  parts = parts.map(strings.dasherize);
-  return options.baseDir + parts.join('/');
-}
+import { addDeclarationToNgModule } from './add_to_module';
+import { buildConfig, BBComponentConfiguration } from './build_config';
 
 export function component(options: BBComponentSchematics): Rule {
   return (_tree: Tree, _context: SchematicContext) => {
-    options.baseDir = options.baseDir ?? 'src/app/';
     options.prefix = options.prefix ?? 'bb-';
+    options.baseDir = options.baseDir ?? 'src/app';
+    options.skipImport = options.skipImport ?? false;
+    options.export = options.export ?? true;
+    let config: BBComponentConfiguration = buildConfig(options);
 
     const sourceTemplates = url('./files');
     const sourceParameterizedTemplates = apply(sourceTemplates, [
-      template({
-        selector: buildSelector(options),
-        fileName: buildFileName(options),
-        className: buildClassName(options)
-      }),
+      template(config),
       forEach((file => {
         return {
           content: file.content,
           path: file.path.replace(/\.template$/, '')
         };
       }) as FileOperator),
-      move(buildDirName(options))
+      move(config.directory)
     ]);
 
-    return mergeWith(sourceParameterizedTemplates);
+    return chain([
+      addDeclarationToNgModule(config),
+      mergeWith(sourceParameterizedTemplates)
+     ]);
   };
 }
