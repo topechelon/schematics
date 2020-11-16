@@ -7,8 +7,10 @@ import {
   SchematicsException
 } from '@angular-devkit/schematics';
 
+import { strings } from '@angular-devkit/core';
+
 import * as ts from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
-import { addDeclarationToModule, addExportToModule, insertImport } from '@schematics/angular/utility/ast-utils';
+import { addDeclarationToModule, addExportToModule, insertImport, insertAfterLastOccurrence, findNodes } from '@schematics/angular/utility/ast-utils';
 import { findModuleFromOptions, buildRelativePath } from '@schematics/angular/utility/find-module';
 import { Change, InsertChange } from '@schematics/angular/utility/change';
 
@@ -51,11 +53,19 @@ function exportFromModule(host: Tree, modulePath: string, config: BBComponentCon
   applyChanges(host, modulePath, exportChanges);
 }
 
-function downgradeInModule(host: Tree, modulePath: string, _config: BBComponentConfiguration): void {
-  const source = readIntoSourceFile(host, modulePath);
+function downgradeInModule(host: Tree, modulePath: string, config: BBComponentConfiguration): void {
+  let source = readIntoSourceFile(host, modulePath);
   const importAngularJSChange = insertImport(source, modulePath, '* as angular', 'angular', true);
   const importDowngradeChange = insertImport(source, modulePath, 'downgradeComponent', '@angular/upgrade/static');
   applyChanges(host, modulePath, [importAngularJSChange, importDowngradeChange]);
+
+  source = readIntoSourceFile(host, modulePath);
+  const allImports = findNodes(source, ts.SyntaxKind.ImportDeclaration);
+  const otherDowngrades = findNodes(source, ts.SyntaxKind.ExpressionStatement).filter(node => node.getFullText().includes('angular.module(\'bb3\')'));
+
+  const downgradeChange = insertAfterLastOccurrence(otherDowngrades, `\nangular.module('bb3').directive('${strings.camelize(config.selector)}', downgradeComponent({ component: ${config.className} }));`, modulePath, allImports[allImports.length - 1].end);
+
+  applyChanges(host, modulePath, [downgradeChange]);
 }
 
 function readIntoSourceFile(host: Tree, modulePath: string): ts.SourceFile {
