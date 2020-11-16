@@ -1,6 +1,5 @@
 // Derived from https://github.com/angular/angular-cli/blob/251b53672e500f483ff5669e6f36b995e09c02c5/packages/schematics/angular/component/index.ts#L38
 
-import { BBComponentConfiguration } from './build_config';
 import {
   Rule,
   Tree,
@@ -14,58 +13,76 @@ import { addDeclarationToModule, addExportToModule, insertImport, insertAfterLas
 import { findModuleFromOptions, buildRelativePath } from '@schematics/angular/utility/find-module';
 import { Change, InsertChange } from '@schematics/angular/utility/change';
 
-export function addDeclarationToNgModule(config: BBComponentConfiguration): Rule {
+interface BBDeclarationConfiguration {
+  skipImport: boolean;
+  export: boolean;
+  directory: string;
+  fileName: string;
+  className: string;
+  fileType: string;
+}
+
+export function addDeclarationToNgModule(config: BBDeclarationConfiguration): Rule {
   return (host: Tree) => {
     if (config.skipImport) {
-        return host;
+      return host;
     }
 
-    const modulePath = findModuleFromOptions(host, { name: config.directory })?.toString();
-    if (!modulePath) {
-      throw new Error(`No module found for ${config.directory}`);
-    }
+    const modulePath = getModulePath(host, config.directory);
 
-    declareInModule(host, modulePath, config);;
+    const source = readIntoSourceFile(host, modulePath);
+    const relativePath = buildRelativePath(modulePath, `/${config.directory}/${config.fileName}.${config.fileType}`);
+    const declarationChanges = addDeclarationToModule(source, modulePath, config.className, relativePath);
+    applyChanges(host, modulePath, declarationChanges);
 
     if (config.export) {
-      exportFromModule(host, modulePath, config);
-    }
-
-    if (config.downgrade) {
-      downgradeComponentInModule(host, modulePath, config);
+      const source = readIntoSourceFile(host, modulePath);
+      const relativePath = buildRelativePath(modulePath, `/${config.directory}/${config.fileName}.${config.fileType}`);
+      const exportChanges = addExportToModule(source, modulePath, config.className, relativePath);
+      applyChanges(host, modulePath, exportChanges);
     }
 
     return host;
   };
 }
 
-function declareInModule(host: Tree, modulePath: string, config: BBComponentConfiguration): void {
-  const source = readIntoSourceFile(host, modulePath);
-  const relativePath = buildRelativePath(modulePath, `/${config.directory}/${config.fileName}.component`);
-  const declarationChanges = addDeclarationToModule(source, modulePath, config.className, relativePath);
-  applyChanges(host, modulePath, declarationChanges);
-};
-
-function exportFromModule(host: Tree, modulePath: string, config: BBComponentConfiguration): void {
-  const source = readIntoSourceFile(host, modulePath);
-  const relativePath = buildRelativePath(modulePath, `/${config.directory}/${config.fileName}.component`);
-  const exportChanges = addExportToModule(source, modulePath, config.className, relativePath);
-  applyChanges(host, modulePath, exportChanges);
+interface BBDowngradeConfiguration {
+  skipImport: boolean;
+  downgrade: boolean;
+  directory: string;
+  selector: string;
+  className: string;
 }
 
-function downgradeComponentInModule(host: Tree, modulePath: string, config: BBComponentConfiguration): void {
-  let source = readIntoSourceFile(host, modulePath);
-  const importAngularJSChange = insertImport(source, modulePath, '* as angular', 'angular', true);
-  const importDowngradeChange = insertImport(source, modulePath, 'downgradeComponent', '@angular/upgrade/static');
-  applyChanges(host, modulePath, [importAngularJSChange, importDowngradeChange]);
+export function downgradeComponentInNgModule(config: BBDowngradeConfiguration): Rule {
+  return (host: Tree) => {
+    if (config.skipImport || !config.downgrade) {
+      return host;
+    }
 
-  source = readIntoSourceFile(host, modulePath);
-  const allImports = findNodes(source, ts.SyntaxKind.ImportDeclaration);
-  const otherDowngrades = findNodes(source, ts.SyntaxKind.ExpressionStatement).filter(node => node.getFullText().includes('angular.module(\'bb3\')'));
+    const modulePath = getModulePath(host, config.directory);
+    let source = readIntoSourceFile(host, modulePath);
+    const importAngularJSChange = insertImport(source, modulePath, '* as angular', 'angular', true);
+    const importDowngradeChange = insertImport(source, modulePath, 'downgradeComponent', '@angular/upgrade/static');
+    applyChanges(host, modulePath, [importAngularJSChange, importDowngradeChange]);
 
-  const downgradeChange = insertAfterLastOccurrence(otherDowngrades, `\nangular.module('bb3').directive('${strings.camelize(config.selector)}', downgradeComponent({ component: ${config.className} }));`, modulePath, allImports[allImports.length - 1].end);
+    source = readIntoSourceFile(host, modulePath);
+    const allImports = findNodes(source, ts.SyntaxKind.ImportDeclaration);
+    const otherDowngrades = findNodes(source, ts.SyntaxKind.ExpressionStatement).filter(node => node.getFullText().includes('angular.module(\'bb3\')'));
 
-  applyChanges(host, modulePath, [downgradeChange]);
+    const downgradeChange = insertAfterLastOccurrence(otherDowngrades, `\nangular.module('bb3').directive('${strings.camelize(config.selector)}', downgradeComponent({ component: ${config.className} }));`, modulePath, allImports[allImports.length - 1].end);
+
+    applyChanges(host, modulePath, [downgradeChange]);
+  };
+}
+
+function getModulePath(host: Tree, directory: string): string {
+  const modulePath = findModuleFromOptions(host, { name: directory })?.toString();
+  if (!modulePath) {
+    throw new Error(`No module found for ${directory}`);
+  }
+
+  return modulePath;
 }
 
 function readIntoSourceFile(host: Tree, modulePath: string): ts.SourceFile {

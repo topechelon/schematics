@@ -13,7 +13,7 @@ import {
 } from '@angular-devkit/schematics';
 import { BBComponentSchematics } from './schema';
 
-import { addDeclarationToNgModule } from './add_to_module';
+import { addDeclarationToNgModule, downgradeComponentInNgModule } from '../utility/generators';
 import { buildConfig, BBComponentConfiguration } from './build_config';
 
 export function component(options: BBComponentSchematics): Rule {
@@ -37,7 +37,8 @@ export function component(options: BBComponentSchematics): Rule {
     ]);
 
     return chain([
-      addDeclarationToNgModule(config),
+      addDeclarationToNgModule({ ...config, fileType: 'component' }),
+      downgradeComponentInNgModule(config),
       mergeWith(sourceParameterizedTemplates)
     ]);
   };
