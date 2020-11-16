@@ -4,4 +4,5 @@ export interface BBComponentSchematics {
   prefix: string;
   skipImport: boolean;
   export: boolean;
+  downgrade: boolean;
 }

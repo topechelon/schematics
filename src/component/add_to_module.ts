@@ -8,9 +8,55 @@ import {
 } from '@angular-devkit/schematics';
 
 import * as ts from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
-import { addDeclarationToModule, addExportToModule } from '@schematics/angular/utility/ast-utils';
+import { addDeclarationToModule, addExportToModule, insertImport } from '@schematics/angular/utility/ast-utils';
 import { findModuleFromOptions, buildRelativePath } from '@schematics/angular/utility/find-module';
-import { InsertChange } from '@schematics/angular/utility/change';
+import { Change, InsertChange } from '@schematics/angular/utility/change';
+
+export function addDeclarationToNgModule(config: BBComponentConfiguration): Rule {
+  return (host: Tree) => {
+    if (config.skipImport) {
+        return host;
+    }
+
+    const modulePath = findModuleFromOptions(host, { name: config.directory })?.toString();
+    if (!modulePath) {
+      throw new Error(`No module found for ${config.directory}`);
+    }
+
+    declareInModule(host, modulePath, config);;
+
+    if (config.export) {
+      exportFromModule(host, modulePath, config);
+    }
+
+    if (config.downgrade) {
+      downgradeInModule(host, modulePath, config);
+    }
+
+    return host;
+  };
+}
+
+function declareInModule(host: Tree, modulePath: string, config: BBComponentConfiguration): void {
+  const source = readIntoSourceFile(host, modulePath);
+  const relativePath = buildRelativePath(modulePath, `/${config.directory}/${config.fileName}.component`);
+  const declarationChanges = addDeclarationToModule(source, modulePath, config.className, relativePath);
+  applyChanges(host, modulePath, declarationChanges);
+};
+
+function exportFromModule(host: Tree, modulePath: string, config: BBComponentConfiguration): void {
+  const source = readIntoSourceFile(host, modulePath);
+  const relativePath = buildRelativePath(modulePath, `/${config.directory}/${config.fileName}.component`);
+  const exportChanges = addExportToModule(source, modulePath, config.className, relativePath);
+  applyChanges(host, modulePath, exportChanges);
+}
+
+function downgradeInModule(host: Tree, modulePath: string, _config: BBComponentConfiguration): void {
+  const source = readIntoSourceFile(host, modulePath);
+  const importAngularJSChange = insertImport(source, modulePath, '* as angular', 'angular', true);
+  const importDowngradeChange = insertImport(source, modulePath, 'downgradeComponent', '@angular/upgrade/static');
+  applyChanges(host, modulePath, [importAngularJSChange, importDowngradeChange]);
+}
 
 function readIntoSourceFile(host: Tree, modulePath: string): ts.SourceFile {
   const text = host.read(modulePath);
@@ -22,50 +68,14 @@ function readIntoSourceFile(host: Tree, modulePath: string): ts.SourceFile {
   return ts.createSourceFile(modulePath, sourceText, ts.ScriptTarget.Latest, true);
 }
 
-export function addDeclarationToNgModule(config: BBComponentConfiguration): Rule {
-  return (host: Tree) => {
-    if (config.skipImport) {
-        return host;
+function applyChanges(host: Tree, fileName: string, changes: Change[]): void {
+  const recorder = host.beginUpdate(fileName);
+
+  for (const change of changes) {
+    if (change instanceof InsertChange) {
+      recorder.insertLeft(change.pos, change.toAdd);
     }
+  }
 
-    let modulePath = findModuleFromOptions(host, { name: config.directory })?.toString();
-    if (!modulePath) {
-      throw new Error(`No module found for ${config.directory}`);
-    }
-
-    const source = readIntoSourceFile(host, modulePath);
-
-    const componentPath = `/${config.directory}/${config.fileName}.component`;
-    const relativePath = buildRelativePath(modulePath, componentPath);
-
-    const declarationChanges = addDeclarationToModule(source,
-                                                      modulePath,
-                                                      config.className,
-                                                      relativePath);
-
-    const declarationRecorder = host.beginUpdate(modulePath);
-    for (const change of declarationChanges) {
-      if (change instanceof InsertChange) {
-        declarationRecorder.insertLeft(change.pos, change.toAdd);
-      }
-    }
-    host.commitUpdate(declarationRecorder);
-
-    if (config.export) {
-      // Need to refresh the AST because we overwrote the file in the host.
-      const source = readIntoSourceFile(host, modulePath);
-
-      const exportRecorder = host.beginUpdate(modulePath);
-      const exportChanges = addExportToModule(source, modulePath, config.className, relativePath);
-
-      for (const change of exportChanges) {
-        if (change instanceof InsertChange) {
-          exportRecorder.insertLeft(change.pos, change.toAdd);
-        }
-      }
-      host.commitUpdate(exportRecorder);
-    }
-
-    return host;
-  };
-}
+  host.commitUpdate(recorder);
+};
