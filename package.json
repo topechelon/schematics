@@ -8,8 +8,9 @@
     "example": "npm run build && npm run example:module && npm run example:component",
     "example:module": "schematics .:module shared/network --debug=false",
     "example:component": "schematics .:component shared/network/recruiter-profile/image --debug=false --downgrade",
-    "clean": "rm -rf src/app/ && git clean -dfx -e node_modules",
-    "deploy": "npm run build && npm publish"
+    "clean": "rm -rf src/app/",
+    "deploy": "npm run build && npm publish",
+    "purge": "npm run clean && git clean -dfx -e node_modules"
   },
   "keywords": [
     "schematics"
