@@ -1,0 +1,52 @@
+// Followed approach by angular team to test UpgradeComponent
+// https://github.com/angular/angular/blob/95fbb7d675d43e6d9954a3f8efb051fcf2f1f58a/packages/upgrade/test/static/test_helpers.ts
+
+import { UpgradeModule, downgradeComponent } from '@angular/upgrade/static';
+import { BrowserModule } from '@angular/platform-browser';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { <%= className %> } from './<%= fileName %>.directive';
+import { Component, NgZone, NgModule } from '@angular/core';
+import * as angular from 'angular';
+
+describe('<%= className %>', () => {
+  it('should create component', () => {
+    @Component({
+      template: '<p><<%= selector %>></<%= selector %>></p>'
+    })
+    class Ng2TestComponent {
+      constructor() { }
+    }
+
+    const testNg1Component = {template: 'Hello, Angular!'};
+
+    const ng1Module = angular.module('ng1Module', [])
+      .component('<%= name %>', testNg1Component)
+      .directive('ng2', downgradeComponent({component: Ng2TestComponent}));
+
+    @NgModule({
+      declarations: [<%= className %>, Ng2TestComponent],
+      entryComponents: [Ng2TestComponent],
+      imports: [BrowserModule, UpgradeModule]
+    })
+    class Ng2Module {
+      ngDoBootstrap() {}
+    }
+
+    document.body.innerHTML = '<div><ng2></ng2></div>';
+    const element = document.body.firstChild as Element;
+
+    platformBrowserDynamic().bootstrapModule(Ng2Module).then(ref => {
+      const ngZone = ref.injector.get<NgZone>(NgZone);
+      const upgrade = ref.injector.get(UpgradeModule);
+      const failHardModule: any = ($provide) => {
+        $provide.value('$exceptionHandler', (err: any) => { throw err; });
+      };
+
+      ngZone.run(() => upgrade.bootstrap(element, [failHardModule, ng1Module.name]));
+
+      return upgrade;
+    }).then(upgrade => {
+      expect(element.textContent).toBe('Hello, Angular!');
+    });
+  });
+});

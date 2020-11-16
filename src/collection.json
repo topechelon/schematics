@@ -12,6 +12,12 @@
       "description": "BB Module Schematic",
       "factory": "./module/index#module",
       "schema": "./module/schema.json"
+    },
+    "upgrade": {
+      "aliases": [ "u" ],
+      "description": "BB Upgrade AJS Schematic",
+      "factory": "./upgrade/index#upgrade",
+      "schema": "./upgrade/schema.json"
     }
   }
 }

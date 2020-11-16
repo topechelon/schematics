@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "id": "BBUpgradeSchematics",
+  "title": "BB Upgrade Options Schema",
+  "type": "object",
+  "description": "Creates an Angular directive wrapper for an AJS component",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The name of the AJS component",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "What is the component's name? (e.g. bb3PersonWorkHistory)"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}
