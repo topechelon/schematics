@@ -13,10 +13,6 @@
         "index": 0
       },
       "x-prompt": "What is the module's path? (e.g. feature/module-path/my-module)"
-    },
-    "baseDir": {
-      "type": "string",
-      "description": "The base directory for the module path"
     }
   },
   "required": [

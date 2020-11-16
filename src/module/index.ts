@@ -17,7 +17,6 @@ import { buildConfig, BBModuleConfiguration } from './build_config';
 
 export function module(options: BBModuleSchematics): Rule {
   return (_tree: Tree, _context: SchematicContext) => {
-    options.baseDir = options.baseDir ?? 'src/app';
     let config: BBModuleConfiguration = buildConfig(options);
 
     const sourceTemplates = url('./files');

@@ -32,7 +32,7 @@ export function addDeclarationToNgModule(config: BBComponentConfiguration): Rule
     }
 
     if (config.downgrade) {
-      downgradeInModule(host, modulePath, config);
+      downgradeComponentInModule(host, modulePath, config);
     }
 
     return host;
@@ -53,7 +53,7 @@ function exportFromModule(host: Tree, modulePath: string, config: BBComponentCon
   applyChanges(host, modulePath, exportChanges);
 }
 
-function downgradeInModule(host: Tree, modulePath: string, config: BBComponentConfiguration): void {
+function downgradeComponentInModule(host: Tree, modulePath: string, config: BBComponentConfiguration): void {
   let source = readIntoSourceFile(host, modulePath);
   const importAngularJSChange = insertImport(source, modulePath, '* as angular', 'angular', true);
   const importDowngradeChange = insertImport(source, modulePath, 'downgradeComponent', '@angular/upgrade/static');

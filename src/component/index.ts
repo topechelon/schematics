@@ -18,10 +18,10 @@ import { buildConfig, BBComponentConfiguration } from './build_config';
 
 export function component(options: BBComponentSchematics): Rule {
   return (_tree: Tree, _context: SchematicContext) => {
-    options.prefix = options.prefix ?? 'bb-';
-    options.baseDir = options.baseDir ?? 'src/app';
     options.skipImport = options.skipImport ?? false;
     options.export = options.export ?? false;
+    options.downgrade = options.downgrade ?? false;
+
     let config: BBComponentConfiguration = buildConfig(options);
 
     const sourceTemplates = url('./files');
