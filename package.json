@@ -5,10 +5,10 @@
   "scripts": {
     "build": "npm run clean && tsc -p tsconfig.json",
     "test": "npm run build && jasmine src/**/*_spec.js",
-    "example": "npm run clean && npm run example:module && npm run example:component",
+    "example": "npm run build && npm run example:module && npm run example:component",
     "example:module": "schematics .:module shared/network --debug=false",
     "example:component": "schematics .:component shared/network/recruiter-profile/image --debug=false --downgrade",
-    "clean": "rm -rf src/app/",
+    "clean": "rm -rf src/app/ && git clean -dfx -e node_modules",
     "deploy": "npm run build && npm publish"
   },
   "keywords": [

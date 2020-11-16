@@ -1,20 +1,20 @@
-import {
-  FileOperator,
-  Rule,
-  SchematicContext,
-  Tree,
-  apply,
-  mergeWith,
-  template,
-  url,
-  move,
-  chain,
-  forEach
-} from '@angular-devkit/schematics';
+import { Rule, SchematicContext, Tree, url, chain } from '@angular-devkit/schematics';
 import { BBComponentSchematics } from './schema';
 
-import { addDeclarationToNgModule, downgradeComponentInNgModule } from '../utility/generators';
-import { buildConfig, BBComponentConfiguration } from './build_config';
+import { addDeclarationToNgModule, downgradeComponentInNgModule, generateFiles } from '../utility/generators';
+import { buildFileName, buildDirectory, buildClassName, buildSelector } from '../utility/naming';
+
+function buildConfig(options: BBComponentSchematics) {
+  return {
+    fileName: buildFileName(options.path),
+    selector: buildSelector(options.path),
+    className: buildClassName(options.path, 'Component'),
+    directory: buildDirectory(options.path),
+    skipImport: options.skipImport ?? false,
+    export: options.export ?? false,
+    downgrade: options.downgrade ?? false
+  };
+}
 
 export function component(options: BBComponentSchematics): Rule {
   return (_tree: Tree, _context: SchematicContext) => {
@@ -22,24 +22,12 @@ export function component(options: BBComponentSchematics): Rule {
     options.export = options.export ?? false;
     options.downgrade = options.downgrade ?? false;
 
-    let config: BBComponentConfiguration = buildConfig(options);
-
-    const sourceTemplates = url('./files');
-    const sourceParameterizedTemplates = apply(sourceTemplates, [
-      template(config),
-      forEach((file => {
-        return {
-          content: file.content,
-          path: file.path.replace(/\.template$/, '')
-        };
-      }) as FileOperator),
-      move(config.directory)
-    ]);
+    let config = buildConfig(options);
 
     return chain([
       addDeclarationToNgModule({ ...config, fileType: 'component' }),
       downgradeComponentInNgModule(config),
-      mergeWith(sourceParameterizedTemplates)
+      generateFiles(url('./files'), config)
     ]);
   };
 }

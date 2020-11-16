@@ -1,38 +1,21 @@
-import {
-  FileOperator,
-  Rule,
-  SchematicContext,
-  Tree,
-  apply,
-  mergeWith,
-  template,
-  url,
-  move,
-  chain,
-  forEach
-} from '@angular-devkit/schematics';
+import { Rule, SchematicContext, Tree, url } from '@angular-devkit/schematics';
 import { BBModuleSchematics } from './schema';
 
-import { buildConfig, BBModuleConfiguration } from './build_config';
+import { generateFiles } from '../utility/generators';
+import { buildFileName, buildDirectory, buildClassName } from '../utility/naming';
+
+function buildConfig(options: BBModuleSchematics) {
+  return {
+    fileName: buildFileName(options.path),
+    className: buildClassName(options.path, 'Module'),
+    directory: buildDirectory(options.path)
+  };
+}
 
 export function module(options: BBModuleSchematics): Rule {
   return (_tree: Tree, _context: SchematicContext) => {
-    let config: BBModuleConfiguration = buildConfig(options);
+    let config = buildConfig(options);
 
-    const sourceTemplates = url('./files');
-    const sourceParameterizedTemplates = apply(sourceTemplates, [
-      template(config),
-      forEach((file => {
-        return {
-          content: file.content,
-          path: file.path.replace(/\.template$/, '')
-        };
-      }) as FileOperator),
-      move(config.directory)
-    ]);
-
-    return chain([
-      mergeWith(sourceParameterizedTemplates)
-    ]);
+    return generateFiles(url('./files'), config);
   };
 }
