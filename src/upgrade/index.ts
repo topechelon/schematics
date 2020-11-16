@@ -10,6 +10,7 @@ function buildConfig(options: BBUpgradeSchematics) {
   let fileName = selector.replace(/^bb3-/, '');
   let className = strings.classify(fileName) + 'Directive';
   return {
+    name: options.name,
     fileName: selector.replace(/^bb3-/, ''),
     selector: selector,
     className: className,
