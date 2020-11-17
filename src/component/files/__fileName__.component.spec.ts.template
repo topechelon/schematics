@@ -1,11 +1,11 @@
 import { <%= className %> } from './<%= fileName %>.component';
 
 describe('<%= className %>', () => {
-  beforeEach(() => {
+  beforeEach(function() {
     this.component = new <%= className %>();
   });
 
-  it('should create an instance of <%= className %>', () => {
+  it('should create an instance of <%= className %>', function() {
     expect(this.component).toBeTruthy();
   });
 });
