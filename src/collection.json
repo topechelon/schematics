@@ -13,6 +13,12 @@
       "factory": "./module/index#module",
       "schema": "./module/schema.json"
     },
+    "service": {
+      "aliases": [ "s" ],
+      "description": "BB Service Schematic",
+      "factory": "./service/index#service",
+      "schema": "./service/schema.json"
+    },
     "upgrade": {
       "aliases": [ "u" ],
       "description": "BB Upgrade AJS Schematic",
