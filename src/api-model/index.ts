@@ -1,5 +1,4 @@
 import { Rule, SchematicContext, Tree, url } from '@angular-devkit/schematics';
-import { BBApiModelSchematics } from './schema';
 
 import { strings } from '@angular-devkit/core';
 

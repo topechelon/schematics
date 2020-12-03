@@ -1,5 +1,4 @@
 import { Rule, SchematicContext, Tree, url, chain } from '@angular-devkit/schematics';
-import { BBUpgradeSchematics } from './schema';
 
 import { strings } from '@angular-devkit/core';
 

@@ -1,5 +1,4 @@
 import { Rule, SchematicContext, Tree, url, chain } from '@angular-devkit/schematics';
-import { BBComponentSchematics } from './schema';
 
 import { addDeclarationToNgModule, downgradeComponentInNgModule, generateFiles } from '../utility/generators';
 import { buildFileName, buildDirectory, buildClassName, buildSelector } from '../utility/naming';

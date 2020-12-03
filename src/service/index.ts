@@ -1,5 +1,4 @@
 import { Rule, SchematicContext, Tree, url } from '@angular-devkit/schematics';
-import { BBServiceSchematics } from './schema';
 
 import { generateFiles } from '../utility/generators';
 import { buildFileName, buildDirectory, buildClassName } from '../utility/naming';
