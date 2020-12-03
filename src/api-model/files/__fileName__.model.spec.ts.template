@@ -1,0 +1,13 @@
+import { <%= className %> } from './<%= fileName %>.model';
+import { plainToClass } from 'class-transformer';
+
+describe('<%= className %>', () => {
+  beforeEach(function() {
+    this.<%= camelize(className) %> = plainToClass(<%= className %>, {
+    });
+  });
+
+  it('deserializes an instance of <%= className %>', function() {
+    expect(this.<%= camelize(className) %>).toBeTruthy();
+  });
+});

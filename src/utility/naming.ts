@@ -1,9 +1,10 @@
 import { strings } from '@angular-devkit/core';
 
 const IGNORED_PREFIXES = [
-  'shared',
+  'common',
+  'feature',
   'core',
-  'feature'
+  'shared'
 ];
 const SELECTOR_PREFIX = 'bb-';
 
@@ -37,7 +38,7 @@ export function buildClassName(path: string, suffix: string): string {
 
 let validateClassName = (className: string, path: string, suffix: string) => {
   let suffixRegex = new RegExp(`[_\\-]?${suffix}$`, 'i');
-  if (!suffixRegex.test(className)) {
+  if (!suffix || !suffixRegex.test(className)) {
     return;
   }
 
