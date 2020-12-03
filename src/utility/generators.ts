@@ -36,6 +36,12 @@ export function addDeclarationToNgModule(config: BBDeclarationConfiguration): Ru
     const modulePath = getModulePath(host, config.directory);
 
     if (modulePath.includes('app.module.ts')) {
+      if (config.directory.includes('src/app/feature/')) {
+        let expectedFeaturePath = config.directory.split('src/app/feature/')[1].split('/')[0];
+        let expectedFeatureModule = strings.classify(expectedFeaturePath) + 'Module';
+        throw new Error(`${expectedFeatureModule} does not exist - please create it (feature/${expectedFeaturePath}) or specify a valid path.`);
+      }
+
       throw new Error('Declarations should not be added to the AppModule - please create feature module or specify a valid path (core/, shared/, etc).');
     }
 
