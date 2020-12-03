@@ -9,6 +9,6 @@ describe('<%= className %>', () => {
   });
 
   it('should be created', function() {
-    expect(this.service).toBeTruthy();
+    expect(this.service instanceof <%= className %>).toBeTrue();
   });
 });
