@@ -35,6 +35,10 @@ export function addDeclarationToNgModule(config: BBDeclarationConfiguration): Ru
 
     const modulePath = getModulePath(host, config.directory);
 
+    if (modulePath.includes('app.module.ts')) {
+      throw new Error('Declarations should not be added to the AppModule - please create feature module or specify a valid path (core/, shared/, etc).');
+    }
+
     const source = readIntoSourceFile(host, modulePath);
     const relativePath = buildRelativePath(modulePath, `/${config.directory}/${config.fileName}.${config.fileType}`);
     const declarationChanges = addDeclarationToModule(source, modulePath, config.className, relativePath);
