@@ -8,6 +8,6 @@ describe('<%= className %>', () => {
   });
 
   it('deserializes an instance of <%= className %>', function() {
-    expect(this.<%= camelize(className) %>).toBeTruthy();
+    expect(this.<%= camelize(className) %> instanceof <%= className %>).toBeTrue();
   });
 });
