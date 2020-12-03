@@ -1,5 +1,6 @@
-import { <%= className %> } from './<%= fileName %>.model';
 import { plainToClass } from 'class-transformer';
+
+import { <%= className %> } from './<%= fileName %>.model';
 
 describe('<%= className %>', () => {
   beforeEach(function() {

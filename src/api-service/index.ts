@@ -12,7 +12,7 @@ const namingConfig = {
 };
 
 function buildConfig(options: BBApiServiceSchematics) {
-  let apiServicePath = buildRelativePath('/' + buildDirectory(options.path, namingConfig), '/src/app/core/api/api.service');
+  let apiServicePath = buildRelativePath('/' + buildDirectory(options.path, namingConfig), '/src/app/core/api') + '/api.service';
 
   return {
     fileName: buildFileName(options.path, namingConfig),
