@@ -21,6 +21,11 @@
       "factory": "./upgrade/index#upgrade",
       "schema": "./upgrade/schema.json"
     },
+    "api": {
+      "description": "BB API Model & Service Schematic",
+      "factory": "./api/index#api",
+      "schema": "./api/schema.json"
+    },
     "api-model": {
       "description": "BB API Model Schematic",
       "factory": "./api-model/index#apiModel",
