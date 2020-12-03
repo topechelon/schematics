@@ -1,14 +1,21 @@
 import { Rule, SchematicContext, Tree, url, chain } from '@angular-devkit/schematics';
 
 import { addDeclarationToNgModule, downgradeComponentInNgModule, generateFiles } from '../utility/generators';
-import { buildFileName, buildDirectory, buildClassName, buildSelector } from '../utility/naming';
+import { buildFileName, buildDirectory, buildClassName, buildSelector, BaseDirectory } from '../utility/naming';
+
+const namingConfig = {
+  validBaseDirs: [
+    BaseDirectory.Feature,
+    BaseDirectory.Shared
+  ]
+};
 
 function buildConfig(options: BBComponentSchematics) {
   return {
-    fileName: buildFileName(options.path),
-    selector: buildSelector(options.path),
-    className: buildClassName(options.path, 'Component'),
-    directory: buildDirectory(options.path),
+    fileName: buildFileName(options.path, namingConfig),
+    selector: buildSelector(options.path, namingConfig),
+    className: buildClassName(options.path, 'Component', namingConfig),
+    directory: buildDirectory(options.path, namingConfig),
     skipImport: options.skipImport ?? false,
     export: options.export ?? false,
     downgrade: options.downgrade ?? false

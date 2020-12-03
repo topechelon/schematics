@@ -1,13 +1,21 @@
 import { Rule, SchematicContext, Tree, url } from '@angular-devkit/schematics';
 
 import { generateFiles } from '../utility/generators';
-import { buildFileName, buildDirectory, buildClassName } from '../utility/naming';
+import { buildFileName, buildDirectory, buildClassName, BaseDirectory } from '../utility/naming';
 
 function buildConfig(options: BBServiceSchematics) {
+  const namingConfig = {
+    validBaseDirs: [
+      BaseDirectory.Core,
+      BaseDirectory.Feature
+    ],
+    defaultBaseDir: BaseDirectory.Core
+  };
+
   return {
-    fileName: buildFileName(options.path),
-    className: buildClassName(options.path, 'Service'),
-    directory: buildDirectory(options.path)
+    fileName: buildFileName(options.path, namingConfig),
+    className: buildClassName(options.path, 'Service', namingConfig),
+    directory: buildDirectory(options.path, namingConfig)
   };
 }
 

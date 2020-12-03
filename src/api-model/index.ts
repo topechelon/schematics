@@ -3,15 +3,18 @@ import { Rule, SchematicContext, Tree, url } from '@angular-devkit/schematics';
 import { strings } from '@angular-devkit/core';
 
 import { generateFiles } from '../utility/generators';
-import { buildFileName, buildDirectory, buildClassName } from '../utility/naming';
+import { buildFileName, buildDirectory, buildClassName, BaseDirectory } from '../utility/naming';
 
 function buildConfig(options: BBApiModelSchematics) {
-  let apiPath = 'core/api/' + options.path;
+  const namingConfig = {
+    validBaseDirs: [BaseDirectory.CoreApi],
+    defaultBaseDir: BaseDirectory.CoreApi
+  };
 
   return {
-    fileName: buildFileName(apiPath),
-    className: buildClassName(options.path, ''),
-    directory: buildDirectory(apiPath),
+    fileName: buildFileName(options.path, namingConfig),
+    className: buildClassName(options.path, '', namingConfig),
+    directory: buildDirectory(options.path, namingConfig),
     ...strings
   };
 }

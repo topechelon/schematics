@@ -1,36 +1,31 @@
 import { strings } from '@angular-devkit/core';
 
-const IGNORED_PREFIXES = [
-  'common',
-  'feature',
-  'core',
-  'shared'
-];
 const SELECTOR_PREFIX = 'bb-';
 
-export function buildDirectory(path: string): string {
-  let parts = getUnfilteredPathParts(path);
-  return `src/app/${getBaseDirectory(path)}/${parts.join('/')}`;
-}
-
-// Default to the feature/ dir if shared/ or core/ are not specified
-let getBaseDirectory = (path: string): string => {
-  path = path.replace(/^\//, '');
-  let firstPart = path.split('/')[0].toLowerCase();
-  if (IGNORED_PREFIXES.includes(firstPart)) {
-    return firstPart;
-  }
-
-  return 'feature';
+export enum BaseDirectory {
+  CoreApi = 'core/api',
+  Core = 'core',
+  Feature = 'feature',
+  Shared = 'shared'
 };
 
-export function buildFileName(path: string): string {
-  let parts = getUnfilteredPathParts(path);
+interface NamingConfig {
+  validBaseDirs: BaseDirectory[];
+  defaultBaseDir?: BaseDirectory;
+}
+
+export function buildDirectory(path: string, config: NamingConfig): string {
+  let parts = getFilteredPathParts(path, config);
+  return `src/app/${getBaseDirectory(path, config)}/${parts.join('/')}`;
+}
+
+export function buildFileName(path: string, config: NamingConfig): string {
+  let parts = getFilteredPathParts(path, config);
   return parts[parts.length - 1];
 }
 
-export function buildClassName(path: string, suffix: string): string {
-  let className = strings.classify(getUnfilteredPathParts(path).join('-'));
+export function buildClassName(path: string, suffix: string, config: NamingConfig): string {
+  let className = strings.classify(getFilteredPathParts(path, config).join('-'));
   validateClassName(className, path, suffix);
 
   return className + suffix;
@@ -46,12 +41,28 @@ let validateClassName = (className: string, path: string, suffix: string) => {
   throw new Error(`Invalid name: ${path}. Did you mean ${replacement}?`);
 };
 
-export function buildSelector(path: string): string {
-  return SELECTOR_PREFIX + getUnfilteredPathParts(path).join('-');
+export function buildSelector(path: string, config: NamingConfig): string {
+  return SELECTOR_PREFIX + getFilteredPathParts(path, config).join('-');
 }
 
-function getUnfilteredPathParts(path: string): Array<string> {
-  let parts = path.split('/');
-  parts = parts.map(strings.dasherize);
-  return parts.filter(part => !IGNORED_PREFIXES.includes(part));
+function getFilteredPathParts(path: string, config: NamingConfig): Array<string> {
+  let baseDir = getBaseDirectory(path, config);
+  path = path.replace(`${baseDir}`, '');
+
+  let parts = path.split(/\/+/).filter(part => !!part);
+  return parts.map(strings.dasherize)
+}
+
+let getBaseDirectory = (path: string, config: NamingConfig): string => {
+  let baseDir = Object.values(BaseDirectory).find(v => path.startsWith(`${v}/`));
+  if (!baseDir && config.defaultBaseDir) {
+    return config.defaultBaseDir;
+  }
+
+  if (!baseDir || !config.validBaseDirs.includes(baseDir)) {
+    let firstPart = baseDir ?? path.split('/')[0];
+    throw new Error(`Invalid base directory: ${firstPart}. Valid directories are ${config.validBaseDirs.join(', ')}`);
+  }
+
+  return baseDir;
 }

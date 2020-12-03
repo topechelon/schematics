@@ -3,19 +3,22 @@ import { Rule, SchematicContext, Tree, url } from '@angular-devkit/schematics';
 import { strings } from '@angular-devkit/core';
 
 import { generateFiles } from '../utility/generators';
-import { buildFileName, buildDirectory, buildClassName } from '../utility/naming';
+import { buildFileName, buildDirectory, buildClassName, BaseDirectory } from '../utility/naming';
 import { buildRelativePath } from '@schematics/angular/utility/find-module';
 
-function buildConfig(options: BBApiServiceSchematics) {
-  let apiPath = 'core/api/' + options.path;
+const namingConfig = {
+  validBaseDirs: [BaseDirectory.CoreApi],
+  defaultBaseDir: BaseDirectory.CoreApi
+};
 
-  let apiServicePath = buildRelativePath('/' + buildDirectory(apiPath), '/src/app/core/api/api.service');
+function buildConfig(options: BBApiServiceSchematics) {
+  let apiServicePath = buildRelativePath('/' + buildDirectory(options.path, namingConfig), '/src/app/core/api/api.service');
 
   return {
-    fileName: buildFileName(apiPath),
-    serviceClassName: buildClassName(options.path, 'Service'),
-    modelClassName: buildClassName(options.path, ''),
-    directory: buildDirectory(apiPath),
+    fileName: buildFileName(options.path, namingConfig),
+    serviceClassName: buildClassName(options.path, 'Service', namingConfig),
+    modelClassName: buildClassName(options.path, '', namingConfig),
+    directory: buildDirectory(options.path, namingConfig),
     apiServicePath,
     ...strings
   };
