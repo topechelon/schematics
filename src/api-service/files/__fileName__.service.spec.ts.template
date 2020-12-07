@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
 
 import { <%= serviceClassName %> } from './<%= fileName %>.service';
 import { <%= modelClassName %> } from './<%= fileName %>.model';
@@ -9,8 +8,6 @@ import { ApiService } from '<%= apiServicePath %>';
 
 describe('<%= serviceClassName %>', () => {
   beforeEach(function() {
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [<%= serviceClassName %>]
