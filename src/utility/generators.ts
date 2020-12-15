@@ -25,6 +25,7 @@ interface BBDeclarationConfiguration {
   fileName: string;
   className: string;
   fileType: string;
+  modulePath?: string;
 }
 
 export function addDeclarationToNgModule(config: BBDeclarationConfiguration): Rule {
@@ -33,7 +34,7 @@ export function addDeclarationToNgModule(config: BBDeclarationConfiguration): Ru
       return host;
     }
 
-    const modulePath = getModulePath(host, config.directory);
+    const modulePath = config.modulePath ?? getModulePath(host, config.directory);
 
     if (modulePath.includes('app.module.ts')) {
       if (config.directory.includes('src/app/feature/')) {

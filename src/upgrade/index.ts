@@ -24,7 +24,7 @@ export function upgrade(options: BBUpgradeSchematics): Rule {
     let config = buildConfig(options);
 
     return chain([
-      addDeclarationToNgModule({ ...config, fileType: 'directive' }),
+      addDeclarationToNgModule({ ...config, fileType: 'directive', modulePath: '/src/app/shared/ajs/ajs.module.ts' }),
       generateFiles(url('./files'), config)
     ]);
   };
