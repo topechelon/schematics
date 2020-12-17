@@ -7,23 +7,26 @@ import { <%= modelClassName %> } from './<%= fileName %>.model';
 import { ApiService } from '<%= apiServicePath %>';
 
 describe('<%= serviceClassName %>', () => {
+  let <%= camelize(serviceClassName) %>: <%= serviceClassName %>;
+  let httpClient: HttpClient;
+
   beforeEach(function() {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [<%= serviceClassName %>]
     });
 
-    this.<%= camelize(serviceClassName) %> = TestBed.get(<%= serviceClassName %>);
-    this.httpClient = TestBed.get(HttpClient);
+    <%= camelize(serviceClassName) %> = TestBed.get(<%= serviceClassName %>);
+    httpClient = TestBed.get(HttpClient);
   });
 
   it('inherits ApiService', function() {
-    expect(this.<%= camelize(serviceClassName) %> instanceof ApiService).toBeTrue();
+    expect(<%= camelize(serviceClassName) %> instanceof ApiService).toBeTrue();
   });
 
   describe('config', () => {
     it('configures a service for <%= modelClassName %>', function() {
-      expect(this.<%= camelize(serviceClassName) %>.config).toEqual({
+      expect(<%= camelize(serviceClassName) %>.config).toEqual({
         Model: <%= modelClassName %>,
         memberPath: BB3Routes.<%= camelize(modelClassName) %>Path,
         memberWrapper: '<%= camelize(modelClassName) %>'

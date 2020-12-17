@@ -3,12 +3,14 @@ import { plainToClass } from 'class-transformer';
 import { <%= className %> } from './<%= fileName %>.model';
 
 describe('<%= className %>', () => {
+  let <%= camelize(className) %>: <%= className %>;
+
   beforeEach(function() {
-    this.<%= camelize(className) %> = plainToClass(<%= className %>, {
+    <%= camelize(className) %> = plainToClass(<%= className %>, {
     });
   });
 
   it('deserializes an instance of <%= className %>', function() {
-    expect(this.<%= camelize(className) %> instanceof <%= className %>).toBeTrue();
+    expect(<%= camelize(className) %> instanceof <%= className %>).toBeTrue();
   });
 });
