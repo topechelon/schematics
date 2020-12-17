@@ -61,6 +61,20 @@ declare interface BBModuleSchematics {
     path: string;
 }
 /**
+ * BB Pipe Options Schema
+ * Creates an Angular pipe with BB naming conventions
+ */
+declare interface BBPipeSchematics {
+    /**
+     * The path of the pipe
+     */
+    path: string;
+    /**
+     * Whether or not the pipe should automatically be exported from a module (Default: false)
+     */
+    export?: boolean;
+}
+/**
  * BB Service Options Schema
  * Creates an Angular service with BB naming conventions
  */

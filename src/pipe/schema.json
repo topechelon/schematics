@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "id": "BBPipeSchematics",
+  "title": "BB Pipe Options Schema",
+  "type": "object",
+  "description": "Creates an Angular pipe with BB naming conventions",
+  "properties": {
+    "path": {
+      "type": "string",
+      "description": "The path of the pipe",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "What is the pipe's path? (e.g. shared/module-path/my-pipe)"
+    },
+    "export": {
+      "type": "boolean",
+      "description": "Whether or not the pipe should automatically be exported from a module (Default: false)"
+    }
+  },
+  "required": [
+    "path"
+  ]
+}

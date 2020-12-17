@@ -41,8 +41,12 @@ let validateClassName = (className: string, path: string, suffix: string) => {
   throw new Error(`Invalid name: ${path}. Did you mean ${replacement}?`);
 };
 
-export function buildSelector(path: string, config: NamingConfig): string {
+export function buildComponentSelector(path: string, config: NamingConfig): string {
   return SELECTOR_PREFIX + getFilteredPathParts(path, config).join('-');
+}
+
+export function buildPipeSelector(path: string, config: NamingConfig): string {
+  return strings.camelize(buildComponentSelector(path, config));
 }
 
 function getFilteredPathParts(path: string, config: NamingConfig): Array<string> {

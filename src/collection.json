@@ -35,6 +35,11 @@
       "description": "BB API Service Schematic",
       "factory": "./api-service/index#apiService",
       "schema": "./api-service/schema.json"
+    },
+    "pipe": {
+      "description": "BB Pipe Schematic",
+      "factory": "./pipe/index#pipe",
+      "schema": "./pipe/schema.json"
     }
   }
 }

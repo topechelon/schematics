@@ -1,0 +1,15 @@
+import { <%= className %> } from './<%= fileName %>.pipe';
+
+describe('<%= className %>', () => {
+  let pipe: <%= className %>;
+
+  beforeEach(() => {
+    pipe = new <%= className %>();
+  });
+
+  describe('transform', () => {
+    it('returns null', function() {
+      expect(pipe.transform(null)).toBeNull();
+    });
+  });
+});

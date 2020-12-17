@@ -1,7 +1,7 @@
 import { Rule, SchematicContext, Tree, url, chain } from '@angular-devkit/schematics';
 
 import { addDeclarationToNgModule, downgradeComponentInNgModule, generateFiles } from '../utility/generators';
-import { buildFileName, buildDirectory, buildClassName, buildSelector, BaseDirectory } from '../utility/naming';
+import { buildFileName, buildDirectory, buildClassName, buildComponentSelector, BaseDirectory } from '../utility/naming';
 
 const namingConfig = {
   validBaseDirs: [
@@ -13,7 +13,7 @@ const namingConfig = {
 function buildConfig(options: BBComponentSchematics) {
   return {
     fileName: buildFileName(options.path, namingConfig),
-    selector: buildSelector(options.path, namingConfig),
+    selector: buildComponentSelector(options.path, namingConfig),
     className: buildClassName(options.path, 'Component', namingConfig),
     directory: buildDirectory(options.path, namingConfig),
     skipImport: options.skipImport ?? false,
