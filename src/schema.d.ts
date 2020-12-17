@@ -51,6 +51,20 @@ declare interface BBComponentSchematics {
     downgrade?: boolean;
 }
 /**
+ * BB Directive Options Schema
+ * Creates an Angular directive with BB naming conventions
+ */
+declare interface BBDirectiveSchematics {
+    /**
+     * The path of the directive
+     */
+    path: string;
+    /**
+     * Whether or not the directive should automatically be exported from a module (Default: false)
+     */
+    export?: boolean;
+}
+/**
  * BB Module Options Schema
  * Creates an Angular module with BB naming conventions
  */

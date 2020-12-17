@@ -1,0 +1,13 @@
+import { <%= className %> } from './<%= fileName %>.directive';
+
+describe('<%= className %>', () => {
+  let directive: <%= className %>;
+
+  beforeEach(() => {
+    directive = new <%= className %>();
+  });
+
+  it('should create an instance', () => {
+    expect(directive).toBeTruthy();
+  });
+});

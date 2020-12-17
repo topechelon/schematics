@@ -40,6 +40,11 @@
       "description": "BB Pipe Schematic",
       "factory": "./pipe/index#pipe",
       "schema": "./pipe/schema.json"
+    },
+    "directive": {
+      "description": "BB Directive Schematic",
+      "factory": "./directive/index#directive",
+      "schema": "./directive/schema.json"
     }
   }
 }
