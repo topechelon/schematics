@@ -6,6 +6,6 @@ import { Directive, ElementRef, Injector, Inject } from '@angular/core';
 })
 export class <%= className %> extends UpgradeComponent {
   constructor(@Inject(ElementRef) elementRef: ElementRef, @Inject(Injector) injector: Injector) {
-    super('<%= name %>', elementRef, injector);
+    super('<%= camelize(name) %>', elementRef, injector);
   }
 }
