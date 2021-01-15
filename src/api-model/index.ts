@@ -13,7 +13,7 @@ function buildConfig(options: BBApiModelSchematics) {
 
   return {
     fileName: buildFileName(options.path, namingConfig),
-    className: buildClassName(options.path, '', namingConfig),
+    modelType: buildClassName(options.path, '', namingConfig),
     directory: buildDirectory(options.path, namingConfig),
     ...strings
   };

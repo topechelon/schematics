@@ -1,4 +1,2 @@
-import { Type } from 'class-transformer';
-
-export class <%= className %> {
+export interface <%= modelType %> {
 }

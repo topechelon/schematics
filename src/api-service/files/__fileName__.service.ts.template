@@ -2,17 +2,16 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { ApiService } from '<%= apiServicePath %>';
-import { <%= modelClassName %> } from './<%= fileName %>.model';
+import { <%= modelType %> } from './<%= fileName %>.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class <%= serviceClassName %> extends ApiService<<%= modelClassName %>> {
+export class <%= serviceClassName %> extends ApiService<<%= modelType %>> {
   constructor(http: HttpClient) {
     super(http, {
-      Model: <%= modelClassName %>,
-      memberPath: BB3Routes.<%= camelize(modelClassName) %>Path,
-      memberWrapper: '<%= camelize(modelClassName) %>'
+      memberPath: BB3Routes.<%= camelize(modelType) %>Path,
+      memberWrapper: '<%= camelize(modelType) %>'
     });
   }
 }

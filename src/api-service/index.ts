@@ -17,7 +17,7 @@ function buildConfig(options: BBApiServiceSchematics) {
   return {
     fileName: buildFileName(options.path, namingConfig),
     serviceClassName: buildClassName(options.path, 'Service', namingConfig),
-    modelClassName: buildClassName(options.path, '', namingConfig),
+    modelType: buildClassName(options.path, '', namingConfig),
     directory: buildDirectory(options.path, namingConfig),
     apiServicePath,
     ...strings

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { <%= serviceClassName %> } from './<%= fileName %>.service';
-import { <%= modelClassName %> } from './<%= fileName %>.model';
+import { <%= modelType %> } from './<%= fileName %>.model';
 import { ApiService } from '<%= apiServicePath %>';
 
 describe('<%= serviceClassName %>', () => {
@@ -25,11 +25,10 @@ describe('<%= serviceClassName %>', () => {
   });
 
   describe('config', () => {
-    it('configures a service for <%= modelClassName %>', function() {
+    it('configures a service for <%= modelType %>', function() {
       expect(<%= camelize(serviceClassName) %>.config).toEqual({
-        Model: <%= modelClassName %>,
-        memberPath: BB3Routes.<%= camelize(modelClassName) %>Path,
-        memberWrapper: '<%= camelize(modelClassName) %>'
+        memberPath: BB3Routes.<%= camelize(modelType) %>Path,
+        memberWrapper: '<%= camelize(modelType) %>'
       });
     });
   });
